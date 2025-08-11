@@ -1,0 +1,9 @@
+[project]
+name = "drone-testing"
+version = "1"
+dependencies = [
+    "pionsdk"
+]
+requires-python = ">=3.8"
+description = "drone-testing"
+readme = "README.md"
