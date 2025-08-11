@@ -3,6 +3,8 @@ name = "drone-testing"
 version = "1"
 dependencies = [
     "pionsdk"
+    "gion"
+    "lokky"
 ]
 requires-python = ">=3.8"
 description = "drone-testing"
