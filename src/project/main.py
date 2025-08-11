@@ -1,9 +1,11 @@
 from pion import Pion
 import cv2
 from camera import Camera
+from threading import Thread
 
 height = 2
 ip = "127.0.0.1"
+camera_ip = '127.0.0.1'
 port = 8000
 drone = Pion(ip,port)
 
@@ -13,7 +15,7 @@ def goto(x, y: float):
 
 
 def photo():
-    camera = Camera('127.0.0.1')
+    camera = Camera(camera_ip)
 
     while True:
         frame = camera.get()
@@ -46,5 +48,5 @@ def fly():
     drone.land()
     drone.disarm()
 
-
+Thread(target=photo, daemon=True).start()
 fly()
