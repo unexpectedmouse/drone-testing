@@ -1,12 +1,26 @@
 from pion import Pion
+import cv2
+from camera import Camera
 
 height = 2
 ip = "127.0.0.1"
 port = 8000
 drone = Pion(ip,port)
 
+
 def goto(x, y: float):
     drone.goto(x, y, height, 0, wait=True)
+
+
+def photo():
+    camera = Camera('127.0.0.1')
+
+    while True:
+        frame = camera.get()
+        cv2.imshow('frame', frame)
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
 
 def fly():
