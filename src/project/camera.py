@@ -10,7 +10,7 @@ class CameraError(IOError):
 
 
 class Camera:
-    def __init__(self, address: str | int) -> None:
+    def __init__(self, address: str) -> None:
         self.c = cv2.VideoCapture(address)
     
     def get(self):

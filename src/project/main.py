@@ -1,17 +1,21 @@
 from pion import Pion
-import cv2
-from camera import Camera
 from threading import Thread
+from time import sleep
+import cv2
+
+from camera import Camera
+
 
 height = 2
-ip = "127.0.0.1"
-camera_ip = '127.0.0.1'
-port = 8000
+ip = '10.1.100.160'
+port = 5656
+camera_ip = 'rtsp://10.1.100.160:8554/pioneer_stream'
 drone = Pion(ip,port)
 
 
 def goto(x, y: float):
-    drone.goto(x, y, height, 0, wait=True)
+    drone.goto(x, y, height, 0)
+    sleep(2.5)
 
 
 def photo():
@@ -47,6 +51,7 @@ def fly():
 
     drone.land()
     drone.disarm()
+
 
 Thread(target=photo, daemon=True).start()
 fly()
