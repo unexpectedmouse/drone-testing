@@ -36,6 +36,7 @@ def fly():
     dist = y * 2
 
     drone.arm()
+    sleep(5)
     drone.takeoff()
 
     for _ in range(dist//step+1):
@@ -50,7 +51,6 @@ def fly():
         goto(x,y)
 
     drone.land()
-    drone.disarm()
 
 
 Thread(target=photo, daemon=True).start()
