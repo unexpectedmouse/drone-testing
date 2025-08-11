@@ -10,12 +10,27 @@ def goto(x, y: float):
 
 
 def fly():
+    x = 4
+    y = 4
+    step = 1
+    dist = y * 2
+
     drone.arm()
     drone.takeoff()
 
-    goto(1, 1)
+    for _ in range(dist//step+1):
+        goto(x,y)
+        x = -x
+        goto(x,y)
+        y = y-step
+    if y + step > -dist / 2:
+        y = -dist / 2
+        goto(x,y)
+        x = -x
+        goto(x,y)
 
     drone.land()
     drone.disarm()
+
 
 fly()
