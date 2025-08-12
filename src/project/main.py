@@ -16,12 +16,12 @@ model_path = 'best.pt'
 drone = Pion(ip,port)
 model = YOLO(model_path)
 
+frame = None
 
-def photo():
-    camera = Camera(camera_ip)
-
+def detect():
     while True:
-        frame = camera.get()
+        if frame == None:
+            continue
 
         results = model.predict(frame)
         print('-> ', end='')
@@ -36,6 +36,17 @@ def photo():
 
         cv2.imshow('frame', frame)
 
+
+
+def photo():
+    global frame
+    camera = Camera(camera_ip)
+    Thread(target=detect, daemon=True).start()
+
+
+    while True:
+        frame = camera.get()
+        
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
