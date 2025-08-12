@@ -11,7 +11,7 @@ height = 2
 ip = '10.1.100.160'
 port = 5656
 camera_ip = 'rtsp://10.1.100.160:8554/pioneer_stream'
-model_path = '../../best.pt'
+model_path = 'best.pt'
 
 drone = Pion(ip,port)
 model = YOLO(model_path)
@@ -30,7 +30,7 @@ def photo():
                 continue
 
             position = result.boxes.xywh
-            frame = cv2.drawMarker(frame, (int(position[0]), int(position[1])), (255,0,0))
+            # frame = cv2.drawMarker(frame, (int(position[0]), int(position[1])), (255,0,0))
             names = [result.names[cls.item()] for cls in result.boxes.cls.int()]
             print(names)
 
@@ -70,4 +70,4 @@ def fly():
 
 
 Thread(target=photo, daemon=True).start()
-fly()
+#fly()
