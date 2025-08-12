@@ -55,7 +55,8 @@ def photo():
         cv2.imshow('frame', frame)
 
 def goto(x, y: float):
-    drone.goto(x, y, height, 0, wait = True)
+    drone.goto(x, y, height, 0)
+    sleep(10)
 
 
 def fly():
@@ -66,7 +67,7 @@ def fly():
 
     drone.arm()
     drone.takeoff()
-    sleep(1)
+    sleep(10)
 
     for _ in range(dist//step+1):
         goto(x,y)
