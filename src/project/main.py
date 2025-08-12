@@ -20,7 +20,7 @@ frame = None
 
 def detect():
     while True:
-        if frame == None:
+        if frame is None:
             continue
 
         results = model.predict(frame)
@@ -34,7 +34,6 @@ def detect():
             names = [result.names[cls.item()] for cls in result.boxes.cls.int()]
             print(names)
 
-        cv2.imshow('frame', frame)
 
 
 
@@ -50,6 +49,7 @@ def photo():
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
+        cv2.imshow('frame', frame)
 
 def goto(x, y: float):
     drone.goto(x, y, height, 0)
