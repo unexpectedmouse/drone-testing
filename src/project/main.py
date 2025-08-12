@@ -18,6 +18,7 @@ model = YOLO(model_path)
 
 frame = None
 
+
 def detect():
     while True:
         if frame is None:
@@ -33,7 +34,6 @@ def detect():
             # frame = cv2.drawMarker(frame, (int(position[0]), int(position[1])), (255,0,0))
             names = [result.names[cls.item()] for cls in result.boxes.cls.int()]
             print(names)
-
 
 
 
