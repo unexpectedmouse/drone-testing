@@ -10,6 +10,9 @@ from camera import Camera
 height = 2
 ip = '10.1.100.160'
 port = 5656
+
+# ip = '127.0.0.1'
+# port = 8000
 camera_ip = 'rtsp://10.1.100.160:8554/pioneer_stream'
 model_path = 'best.pt'
 
@@ -52,8 +55,7 @@ def photo():
         cv2.imshow('frame', frame)
 
 def goto(x, y: float):
-    drone.goto(x, y, height, 0)
-    sleep(5)
+    drone.goto(x, y, height, 0, wait = True)
 
 
 def fly():
@@ -63,8 +65,8 @@ def fly():
     dist = y * 2
 
     drone.arm()
-    sleep(5)
     drone.takeoff()
+    sleep(1)
 
     for _ in range(dist//step+1):
         goto(x,y)
@@ -81,4 +83,4 @@ def fly():
 
 
 Thread(target=photo, daemon=True).start()
-#fly()
+fly()
