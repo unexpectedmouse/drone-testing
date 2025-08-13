@@ -36,9 +36,12 @@ def detect():
             if result.boxes == None:
                 continue
 
-            position = result.boxes.xywh
-            bot_x,bot_y = get_geobot_coords(position[0],position[1])
+            position = list(result.boxes.xywh)
+            print(position)
+            if position == []:continue
+            bot_x,bot_y = get_geobot_coords(position[0][0],position[0][1])
             print('bot x position:', bot_x, '\r\n', 'bot y position:', bot_y)
+            quit()
             # frame = cv2.drawMarker(frame, (int(position[0]), int(position[1])), (255,0,0))
             
             names = [result.names[cls.item()] for cls in result.boxes.cls.int()]
@@ -61,7 +64,7 @@ def get_geobot_coords(cam_x, cam_y):
     global_x = 1.2*height*cam_x
     global_y = 0.9*height*cam_y
 
-    drone_pos_x, drone_pos_y = drone.xyz()[0], drone.xyz()[1]
+    drone_pos_x, drone_pos_y = drone.xyz[0], drone.xyz[1]
 
     geobot_x = drone_pos_x+global_x
     geobot_y = drone_pos_y+global_y
