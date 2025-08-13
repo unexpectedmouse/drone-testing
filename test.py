@@ -1,16 +1,13 @@
-from pion import Pion
-from threading import Thread
-from time import sleep
-from ultralytics import YOLO
-import cv2
+import numpy as np
 
+def calculate_trajectory(bot_pos: tuple, base_pos: tuple):
+    bot = np.array(bot_pos)
+    base = np.array(base_pos)
+    dist = base - bot
+    dist = dist / np.linalg.norm(dist)
+    dist = -dist * 0.2
+    dist += bot_pos
 
-drone = Pion('127.0.0.1', '8000')
+    return tuple(dist)
 
-height = 0.4
-
-
-def goto(x, y: float):
-    drone.goto(x, y, height, 0, wait=True)
-    sleep(1)
-
+print(calculate_trajectory((1,1), (0,0)))
