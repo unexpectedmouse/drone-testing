@@ -38,13 +38,12 @@ def detect():
                 continue
 
             position = list(result.boxes.xywh)
-            print(position)
+            print(position or '')
             if position == []:continue
             bot_x,bot_y = get_geobot_coords(position[0][0],position[0][1])
             print('bot position:', bot_x, bot_y)
             print('drone position:', *drone.xyz[0:2])
-            print('going from:', *calculate_trajectory([bot_x, bot_y], *drone.xyz[0:2]))
-            quit()
+            print('going from:', *calculate_trajectory([bot_x, bot_y], [-2.83,1.61]))
             # frame = cv2.drawMarker(frame, (int(position[0]), int(position[1])), (255,0,0))
             
             names = [result.names[cls.item()] for cls in result.boxes.cls.int()]
@@ -64,11 +63,12 @@ def photo():
 
 
 def get_geobot_coords(cam_x, cam_y):
-    frame_width_global = 640 * 1.2
-    frame_height_global = 640 * 0.9
+    frame_width_global = height * 1.2 
+    frame_height_global = height * 0.9 
 
-    bot_x = (cam_x * frame_width_global) / 640
-    bot_y = (cam_y * frame_height_global) / 640
+
+    bot_x = (cam_x * frame_width_global) / 640 
+    bot_y = (cam_y * frame_height_global) / 480
 
     return drone.xyz[0] + bot_x, drone.xyz[1] + bot_y
 
