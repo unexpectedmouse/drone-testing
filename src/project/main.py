@@ -66,6 +66,8 @@ def get_geobot_coords(cam_x, cam_y):
 
     drone_pos_x, drone_pos_y = drone.xyz[0], drone.xyz[1]
 
+    print('drone pos x:', drone_pos_x, '\r\n', 'drone pos y:', drone_pos_y)
+
     geobot_x = drone_pos_x+global_x
     geobot_y = drone_pos_y+global_y
 
