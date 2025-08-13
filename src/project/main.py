@@ -8,12 +8,12 @@ from camera import Camera
 
 # config
 height = 2
-ip = '10.1.100.160'
+ip = '10.1.100.237'
 port = 5656
 
 # ip = '127.0.0.1'
 # port = 8000
-camera_ip = 'rtsp://10.1.100.160:8554/pioneer_stream'
+camera_ip = 'rtsp://10.1.100.237:8554/pioneer_stream'
 model_path = 'best.pt'
 
 drone = Pion(ip,port)
@@ -111,7 +111,7 @@ def fly():
         goto(x,y)
         x = -x
         goto(x,y)
-
+    drone.stop_moving()
     drone.land()
 
 
