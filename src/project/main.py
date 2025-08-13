@@ -24,6 +24,7 @@ cow_boxes = [(-2.83,1.61), (-2.88,-3.32), (3.55,-2.85)]
 
 frame = None
 
+stop_fly = False
 
 def detect():
     while True:
@@ -48,6 +49,8 @@ def detect():
             
             names = [result.names[cls.item()] for cls in result.boxes.cls.int()]
             print(names)
+            if ('cow1' or 'cow2' or 'cow-bad') in names:
+                cow_go()
 
 
 def photo():
@@ -81,12 +84,28 @@ def calculate_trajectory(bot_pos: tuple, base_pos: tuple):
     dist = -dist * 0.2
     dist += bot_pos
 
-    return tuple(dist)
+    return tuple(*dist)
 
 
-def goto(x, y: float):
+def goto(x, y: float, force = False):
+    while stop_fly:
+        sleep(1)
     drone.goto(x, y, height, 0, wait=True)
     sleep(1)
+
+def cow_go():
+    global stop_fly
+    global height
+    stop_fly = True
+    drone.stop_moving()
+    
+    drone_goto_x, drone_goto_y = calculate_trajectory()
+
+    height = 0.35
+    goto(drone_goto_x, drone_goto_y, True)
+    goto(-2.83,1.61, True)
+
+    goto(1.2,-3.8)
 
 
 def fly():
