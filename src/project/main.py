@@ -2,6 +2,7 @@ from pion import Pion
 from threading import Thread
 from time import sleep
 from ultralytics import YOLO
+import numpy as np
 import cv2
 
 from camera import Camera
@@ -72,18 +73,14 @@ def get_geobot_coords(cam_x, cam_y):
     return drone.xyz[0] + bot_x, drone.xyz[1] + bot_y
 
 
-def calculate_trajectory(to: list, _from: list):
-    point_x, point_y = to
-    bot_x, bot_y = _from
+def calculate_trajectory(bot_pos: tuple, base_pos: tuple):
+    bot = np.array(*bot_pos)
+    base = np.array(*base_pos)
+    dist = base - bot
+    dist = dist / np.linalg.norm(dist)
+    dist = -dist * 0.2
 
-    x_to_go_from:float
-    y_to_go_from:float = 0
-
-    similarity_coef = (bot_y/(point_y-bot_y))
-
-    x_to_go_from = (bot_x-(similarity_coef*(point_x-bot_x)))
-    
-    return x_to_go_from, y_to_go_from
+    return tuple(dist)
 
 
 def goto(x, y: float):
