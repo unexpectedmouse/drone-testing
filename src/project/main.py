@@ -41,6 +41,7 @@ def detect():
             if position == []:continue
             bot_x,bot_y = get_geobot_coords(position[0][0],position[0][1])
             print('bot x position:', bot_x, '\r\n', 'bot y position:', bot_y)
+            print(drone.xyz[0:2])
             quit()
             # frame = cv2.drawMarker(frame, (int(position[0]), int(position[1])), (255,0,0))
             
@@ -70,8 +71,21 @@ def get_geobot_coords(cam_x, cam_y):
     return drone.xyz[0] + bot_x, drone.xyz[1] + bot_y
 
 
-def calculate_trajectory_to():
-    pass
+def calculate_trajectory(to:set, _from:set):
+    point_x, point_y = to 
+    bot_x, bot_y = _from
+
+    x_to_go_from:float
+    y_to_go_from:float = 0
+
+    similarity_coef = (bot_y/(point_y-bot_y))
+
+    x_to_go_from = (bot_x-(similarity_coef*(point_x-bot_x)))
+    
+    return x_to_go_from, y_to_go_from
+
+    
+    
 
 
 def goto(x, y: float):
