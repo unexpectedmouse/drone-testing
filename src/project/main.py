@@ -61,17 +61,13 @@ def photo():
 
 
 def get_geobot_coords(cam_x, cam_y):
-    global_x = 1.2*height*cam_x
-    global_y = 0.9*height*cam_y
+    frame_width_global = 640 * 1.2
+    frame_height_global = 640 * 0.9
 
-    drone_pos_x, drone_pos_y = drone.xyz[0], drone.xyz[1]
+    bot_x = (cam_x * frame_width_global) / 640
+    bot_y = (cam_y * frame_height_global) / 640
 
-    print('drone pos x:', drone_pos_x, '\r\n', 'drone pos y:', drone_pos_y)
-
-    geobot_x = drone_pos_x+global_x
-    geobot_y = drone_pos_y+global_y
-
-    return geobot_x, geobot_y
+    return drone.xyz[0] + bot_x, drone.xyz[1] + bot_y
 
 
 def calculate_trajectory_to():
