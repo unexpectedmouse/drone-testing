@@ -1,13 +1,12 @@
-import numpy as np
+x = 0
+y = 0.5
+flip_x = -1
+flip_y = 1
 
-def calculate_trajectory(bot_pos: tuple, base_pos: tuple):
-    bot = np.array(bot_pos)
-    base = np.array(base_pos)
-    dist = base - bot
-    dist = dist / np.linalg.norm(dist)
-    dist = -dist * 0.2
-    dist += bot_pos
-
-    return tuple(dist)
-
-print(calculate_trajectory((1,1), (0,0)))
+for i in range(6):
+    print(x * flip_x, ';', y * flip_y)
+    x = y
+    y = 0
+    print(x * flip_x, ';', y * flip_y)
+    y = x + 0.5
+    x = 0

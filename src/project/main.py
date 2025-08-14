@@ -42,15 +42,11 @@ def detect():
             position = list(result.boxes.xywh)
             if not position: continue
             print(position or '')
-            bot_x, bot_y = get_geobot_coords(position[0][0], position[0][1])
-            print('bot position:', bot_x, bot_y)
-            print('drone position:', *drone.xyz[0:2])
-            print('going from:', *calculate_trajectory((bot_x, bot_y), (-2.83, 1.61)))
 
             names = [result.names[cls.item()] for cls in result.boxes.cls.int()]
             print(names)
             if ('cow1' in names) or ('cow2' in names):
-                cow_go((bot_x, bot_y), cow_boxes[0])
+                cow_go()
                 return
 
 
@@ -66,26 +62,6 @@ def photo():
         cv2.imshow('frame', frame)
 
 
-def get_geobot_coords(cam_x, cam_y):
-    current_height = drone.xyz[2]
-    frame_width_global = current_height * 1.2
-    frame_height_global = current_height * 0.9
-
-    bot_x = (cam_x * frame_width_global) / 640
-    bot_y = (cam_y * frame_height_global) / 480
-
-    return drone.xyz[0] + bot_x, drone.xyz[1] + bot_y
-
-
-def calculate_trajectory(bot_pos: tuple, base_pos: tuple):
-    bot = np.array(bot_pos)
-    base = np.array(base_pos)
-    dist = base - bot
-    dist = dist / np.linalg.norm(dist)
-    dist = -dist * 0.5
-    dist += bot_pos
-
-    return dist[0], dist[1]
 
 
 def goto(x, y: float, force=False):
@@ -95,23 +71,35 @@ def goto(x, y: float, force=False):
     sleep(1)
 
 
-def cow_go(bot: tuple, base: tuple):
-    global stop_fly
+def cow_go():
     global height
-    stop_fly = True
+    global stop_fly
+    height = 0.5
+    flip_x = 1
+    flip_y = 1
+
+    if drone.xyz[1] < 0:
+        flip_y = -1
+    if drone.xyz[0] < 0:
+        flip_x = -1
     drone.stop_moving()
     sleep(2)
+    stop_fly = True
+    goto(0,0, True)
 
-    drone_goto_x, drone_goto_y = calculate_trajectory(bot, base)
+    
+    x, y = 0, 0.5
+    for i in range(6):
+        goto(x * flip_x, ';', y * flip_y, True)
+        x = y
+        y = 0
+        goto(x * flip_x, ';', y * flip_y, True)
+        y = x + 0.5
+        x = 0
 
-    height = 0.35
-    goto(drone_goto_x, drone_goto_y, True)
-    goto(-2.83, 1.61, True)
 
-    height = 2
-    goto(1.2, -3.8, True)
-    sleep(2)
-    drone.land()
+    
+    
 
 
 def fly():
