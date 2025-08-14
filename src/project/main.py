@@ -1,9 +1,10 @@
-from pion import Pion
 from threading import Thread
 from time import sleep
-from ultralytics import YOLO
-import numpy as np
+
 import cv2
+import numpy as np
+from pion import Pion
+from ultralytics import YOLO
 
 from camera import Camera
 
@@ -66,8 +67,9 @@ def photo():
 
 
 def get_geobot_coords(cam_x, cam_y):
-    frame_width_global = height * 1.2
-    frame_height_global = height * 0.9
+    current_height = drone.xyz[2]
+    frame_width_global = current_height * 1.2
+    frame_height_global = current_height * 0.9
 
     bot_x = (cam_x * frame_width_global) / 640
     bot_y = (cam_y * frame_height_global) / 480
@@ -87,12 +89,10 @@ def calculate_trajectory(bot_pos: tuple, base_pos: tuple):
 
 
 def goto(x, y: float, force=False):
-    
     while stop_fly and not force:
         sleep(1)
     drone.goto(x, y, height, 0, wait=True)
     sleep(1)
-
 
 
 def cow_go(bot: tuple, base: tuple):
@@ -108,8 +108,9 @@ def cow_go(bot: tuple, base: tuple):
     goto(drone_goto_x, drone_goto_y, True)
     goto(-2.83, 1.61, True)
 
+    height = 2
     goto(1.2, -3.8, True)
-    drone.stop_moving()
+    sleep(2)
     drone.land()
 
 
