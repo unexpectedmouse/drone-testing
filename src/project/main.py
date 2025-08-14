@@ -17,40 +17,39 @@ port = 5656
 camera_ip = 'rtsp://10.1.100.237:8554/pioneer_stream'
 model_path = 'best.pt'
 
-drone = Pion(ip,port)
+drone = Pion(ip, port)
 model = YOLO(model_path)
 
-cow_boxes = [(-2.83,1.61), (-2.88,-3.32), (3.55,-2.85)]
+cow_boxes = [(-2.83, 1.61), (-2.88, -3.32), (3.55, -2.85)]
 
 frame = None
 
 stop_fly = False
 
+
+# noinspection PyUnreachableCode
 def detect():
     while True:
         if frame is None:
             continue
 
         results = model.predict(frame)
-        # print('-> ', end='')
-        
         for result in results:
-            if result.boxes == None:
+            if result.boxes is None:
                 continue
 
             position = list(result.boxes.xywh)
+            if not position: continue
             print(position or '')
-            if position == []:continue
-            bot_x,bot_y = get_geobot_coords(position[0][0],position[0][1])
+            bot_x, bot_y = get_geobot_coords(position[0][0], position[0][1])
             print('bot position:', bot_x, bot_y)
             print('drone position:', *drone.xyz[0:2])
-            print('going from:', *calculate_trajectory([bot_x, bot_y], [-2.83,1.61]))
-            # frame = cv2.drawMarker(frame, (int(position[0]), int(position[1])), (255,0,0))
-            
+            print('going from:', *calculate_trajectory((bot_x, bot_y), (-2.83, 1.61)))
+
             names = [result.names[cls.item()] for cls in result.boxes.cls.int()]
             print(names)
             if ('cow1' or 'cow2' or 'cow-bad') in names:
-                cow_go()
+                cow_go((bot_x, bot_y), cow_boxes[0])
 
 
 def photo():
@@ -66,11 +65,10 @@ def photo():
 
 
 def get_geobot_coords(cam_x, cam_y):
-    frame_width_global = height * 1.2 
-    frame_height_global = height * 0.9 
+    frame_width_global = height * 1.2
+    frame_height_global = height * 0.9
 
-
-    bot_x = (cam_x * frame_width_global) / 640 
+    bot_x = (cam_x * frame_width_global) / 640
     bot_y = (cam_y * frame_height_global) / 480
 
     return drone.xyz[0] + bot_x, drone.xyz[1] + bot_y
@@ -87,30 +85,31 @@ def calculate_trajectory(bot_pos: tuple, base_pos: tuple):
     return tuple(*dist)
 
 
-def goto(x, y: float, force = False):
+def goto(x, y: float, force=False):
     while stop_fly and not force:
         sleep(1)
     drone.goto(x, y, height, 0, wait=True)
     sleep(1)
 
-def cow_go():
+
+def cow_go(bot: tuple, base: tuple):
     global stop_fly
     global height
     stop_fly = True
     drone.stop_moving()
-    
-    drone_goto_x, drone_goto_y = calculate_trajectory()
+
+    drone_goto_x, drone_goto_y = calculate_trajectory(bot, base)
 
     height = 0.35
     goto(drone_goto_x, drone_goto_y, True)
-    goto(-2.83,1.61, True)
+    goto(-2.83, 1.61, True)
 
-    goto(1.2,-3.8, True)
+    goto(1.2, -3.8, True)
 
 
 def fly():
-    x = 4
-    y = 4
+    x = 3
+    y = 3
     step = 1
     dist = y * 2
 
@@ -118,16 +117,16 @@ def fly():
     drone.takeoff()
     sleep(10)
 
-    for _ in range(dist//step+1):
-        goto(x,y)
+    for _ in range(dist // step + 1):
+        goto(x, y)
         x = -x
-        goto(x,y)
-        y = y-step
+        goto(x, y)
+        y = y - step
     if y + step > -dist / 2:
         y = -dist / 2
-        goto(x,y)
+        goto(x, y)
         x = -x
-        goto(x,y)
+        goto(x, y)
     drone.stop_moving()
     drone.land()
 
