@@ -88,7 +88,7 @@ def calculate_trajectory(bot_pos: tuple, base_pos: tuple):
 
 
 def goto(x, y: float, force = False):
-    while stop_fly:
+    while stop_fly and not force:
         sleep(1)
     drone.goto(x, y, height, 0, wait=True)
     sleep(1)
@@ -105,7 +105,7 @@ def cow_go():
     goto(drone_goto_x, drone_goto_y, True)
     goto(-2.83,1.61, True)
 
-    goto(1.2,-3.8)
+    goto(1.2,-3.8, True)
 
 
 def fly():
